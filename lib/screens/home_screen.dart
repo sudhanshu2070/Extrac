@@ -15,8 +15,12 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildTotalBalanceSection(),
-            const SizedBox(height: 20),
+            Container(
+              color: Colors.blueGrey[200], // Grey background for the section
+              padding: const EdgeInsets.symmetric(vertical: 80.0, horizontal: 20), // Padding to ensure vertical spacing
+            child: _buildTotalBalanceSection(),
+            // const SizedBox(height: 150),
+            ),
             _buildAnalyticsSection(context),
             const SizedBox(height: 20),
             _buildLastTransactionsSection(context),
@@ -29,22 +33,24 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildTotalBalanceSection() {
-    double totalBalance = 1234.56;
+    double totalBalance = 123478.00;
 
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: Colors.blueAccent,
+        color: Colors.grey[350],
         borderRadius: BorderRadius.circular(8.0),
       ),
-      child: Text(
-        'Total Balance: \$${totalBalance.toStringAsFixed(2)}',
+    child: Center( // Center the content within the container
+    child: Text(
+        'Total Balance: \$${totalBalance.toStringAsFixed(2)} Mn',
         style: const TextStyle(
-          color: Colors.white,
+          color: Colors.black87,
           fontSize: 24,
           fontWeight: FontWeight.bold,
         ),
       ),
+    ),
     );
   }
 
