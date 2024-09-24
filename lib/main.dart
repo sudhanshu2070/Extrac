@@ -1,3 +1,4 @@
+import 'package:expense_tracker/screens/add_expense.dart';
 import 'package:flutter/material.dart';
 import 'screens/login_screen.dart';
 import 'screens/signup_screen.dart';
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         '/signup': (context) => SignupScreen(),
         '/home': (context) => const HomeScreen(),
         '/detail': (context) => const DetailScreen(),
+        '/add_expense': (context) => const AddExpensePage(), // Define the route here
       },
     );
   }
