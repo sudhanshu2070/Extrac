@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; // For formatting date
 
 import '/services/expense_service.dart';
 import '/models/expense_model.dart';
@@ -14,8 +15,11 @@ class AddExpensePage extends StatefulWidget {
 class AddExpensePageState extends State<AddExpensePage> {
   final _formKey = GlobalKey<FormState>();
   double _amount = 0.0;
-  String _paymentCategory = 'A';
+  String _paymentCategory = '';
   String _category = '';
+  // String? _category;
+  late DateTime _selectedDate = DateTime.now();
+  String _comments = '';
 
   void _saveExpense() async {
     if (_formKey.currentState?.validate() ?? false) {
@@ -25,6 +29,7 @@ class AddExpensePageState extends State<AddExpensePage> {
         paymentCategory: _paymentCategory,
         category: _category,
         date: DateTime.now(),
+        comments: _comments,
       );
 
       // Logging the expense details locally
@@ -46,15 +51,134 @@ class AddExpensePageState extends State<AddExpensePage> {
       _formKey.currentState?.reset();
       setState(() {
         _amount = 0.0;
-        _paymentCategory = 'A';
+        _paymentCategory = '';
         _category = '';
+        _comments = '';
       });
 
     }
   }
 
 
+  Future<void> _pickDate() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+      });
+    }
+  }
+
   @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Add Expense'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            children: [
+              TextFormField(
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Amount',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Amount is mandatory';
+                  }
+                  if (double.tryParse(value) == null) {
+                    return 'Please enter a valid number';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _amount = double.parse(value!);
+                },
+              ),
+              const SizedBox(height: 16.0),
+              const Text('Choose Payment Category', style: TextStyle(fontSize: 16)),
+              const SizedBox(height: 8.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: ['Need', 'Wants', 'Savings'].map((categoryPayment) =>
+                    FilledButton.tonal(
+                      onPressed: () {
+                        setState(() {
+                          _paymentCategory = categoryPayment;
+                        });
+                      },
+                      style: FilledButton.styleFrom(
+                        backgroundColor: _paymentCategory == categoryPayment
+                            ? Colors.blueGrey
+                            : Colors.grey[300],
+                      ),
+                      child: Text(categoryPayment),
+                    ),
+                ).toList(),
+              ),
+              const SizedBox(height: 16.0),
+              DropdownButtonFormField<String>(
+                value: _category.isNotEmpty ? _category : null,
+                decoration: const InputDecoration(
+                  labelText: 'Category',
+                ),
+                // hint: const Text('Select a category'),
+                items: ['Food', 'Transport', 'Entertainment'].map(( category) {
+                  return DropdownMenuItem<String>(
+                    value: category,
+                    child: Text(category),
+                  );
+                }).toList(),
+                onChanged: ( value) {
+                  setState(() {
+                    _category = value!;
+                  });
+                },
+                // validator: (value) {
+                //   if (value == null || value.isEmpty) {
+                //     return 'Category is mandatory';
+                //   }
+                //   return null;
+                // },
+              ),
+              const SizedBox(height: 16.0),
+              ListTile(
+                title: Text('Date: ${DateFormat.yMd().format(_selectedDate)}'),
+                trailing: const Icon(Icons.calendar_today),
+                onTap: _pickDate,
+              ),
+              const SizedBox(height: 16.0),
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Comments',
+                ),
+                onSaved: (value) {
+                  _comments = value ?? '';
+                },
+              ),
+              const SizedBox(height: 32.0),
+              ElevatedButton(
+                onPressed: _saveExpense,
+                child: const Text('Save Expense'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/*
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -74,7 +198,7 @@ class AddExpensePageState extends State<AddExpensePage> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter an amount';
+                    return 'Amount is mandatory';
                   }
                   return null;
                 },
@@ -83,12 +207,60 @@ class AddExpensePageState extends State<AddExpensePage> {
                 },
               ),
               const SizedBox(height: 16.0),
+              const Text('Choose Payment Category', style: TextStyle(fontSize: 16)),
+              const SizedBox(height: 8.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  FilledButton.tonal(
+                    onPressed: () {
+                      setState(() {
+                        _paymentCategory = 'A';
+                      });
+                    },
+                    style: FilledButton.styleFrom(
+                      backgroundColor: _paymentCategory == 'A'
+                          ? Colors.blueGrey
+                          : Colors.grey[300],
+                    ),
+                    child: const Text('A'),
+                  ),
+                  FilledButton.tonal(
+                    onPressed: () {
+                      setState(() {
+                        _paymentCategory = 'B';
+                      });
+                    },
+                    style: FilledButton.styleFrom(
+                      backgroundColor: _paymentCategory == 'B'
+                          ? Colors.blueGrey
+                          : Colors.grey[300],
+                    ),
+                    child: const Text('B'),
+                  ),
+                  FilledButton.tonal(
+                    onPressed: () {
+                      setState(() {
+                        _paymentCategory = 'C';
+                      });
+                    },
+                    style: FilledButton.styleFrom(
+                      backgroundColor: _paymentCategory == 'C'
+                          ? Colors.blueGrey
+                          : Colors.grey[300],
+                    ),
+                    child: const Text('C'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16.0),
+              // Dropdown for Category without initial value
               DropdownButtonFormField<String>(
-                value: _paymentCategory,
+                value: _category, // Updated to be nullable (no initial value)
                 decoration: const InputDecoration(
-                  labelText: 'Payment Category',
+                  labelText: 'Category',
                 ),
-                items: ['A', 'B', 'C'].map((category) {
+                items: ['Food', 'Transport', 'Entertainment'].map((category) {
                   return DropdownMenuItem<String>(
                     value: category,
                     child: Text(category),
@@ -96,23 +268,29 @@ class AddExpensePageState extends State<AddExpensePage> {
                 }).toList(),
                 onChanged: (value) {
                   setState(() {
-                    _paymentCategory = value!;
+                    _category = value;
                   });
                 },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Category is mandatory';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16.0),
+              ListTile(
+                title: Text('Date: ${DateFormat.yMd().format(_selectedDate)}'),
+                trailing: const Icon(Icons.calendar_today),
+                onTap: _pickDate,
               ),
               const SizedBox(height: 16.0),
               TextFormField(
                 decoration: const InputDecoration(
-                  labelText: 'Category',
+                  labelText: 'Comments',
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a category';
-                  }
-                  return null;
-                },
                 onSaved: (value) {
-                  _category = value!;
+                  _comments = value!;
                 },
               ),
               const SizedBox(height: 32.0),
@@ -127,3 +305,4 @@ class AddExpensePageState extends State<AddExpensePage> {
     );
   }
 }
+ */

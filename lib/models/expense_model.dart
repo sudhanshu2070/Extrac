@@ -3,12 +3,14 @@ class Expense {
   final String paymentCategory;
   final String category;
   final DateTime date;
+  final String comments;
 
   Expense({
     required this.amount,
     required this.paymentCategory,
     required this.category,
     required this.date,
+    required this.comments,
   });
 
   Map<String, dynamic> toJson() {
@@ -17,6 +19,7 @@ class Expense {
       'paymentCategory': paymentCategory,
       'category': category,
       'date': date.toIso8601String(),
+      'comments' : comments,
     };
   }
 
@@ -26,6 +29,7 @@ class Expense {
       paymentCategory: json['paymentCategory'] as String,
       category: json['category'] as String,
       date: DateTime.parse(json['date'] as String),
+      comments: json['comments'] as String,
     );
   }
 }
