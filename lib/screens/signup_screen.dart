@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:ui' as ui;
 
 class SignupScreen extends StatelessWidget {
   final TextEditingController _usernameController = TextEditingController();
@@ -13,6 +14,22 @@ class SignupScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sign Up'),
+        backgroundColor: const Color(0xFF2E2F45), // Deep Navy Gray for the AppBar
+        foregroundColor: Colors.white, // Change the color of the back button to white
+        titleTextStyle: TextStyle(
+          // color: Colors.white, // Set title color to white for better visibility
+          fontSize: 21.5, // You can adjust the font size as needed
+          fontWeight: FontWeight.normal, // Optional: make the title bold
+          foreground: Paint()
+            ..shader = ui.Gradient.linear(
+              const Offset(0, 35),
+              const Offset(160, 50),
+              <Color>[
+                Colors.white,
+                Colors.blueGrey,
+              ],
+            ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

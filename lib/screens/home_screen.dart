@@ -305,19 +305,3 @@ class HomeScreen extends StatelessWidget {
 
 }
 
-
-// Widget _buildAddExpenseButton(BuildContext context) {
-  //   return Center(
-  //     child: ElevatedButton(
-  //       onPressed: () {
-  //         Navigator.pushNamed(context, '/add_expense');
-  //       },
-  //       style: ElevatedButton.styleFrom(
-  //         backgroundColor: Colors.green,
-  //         minimumSize: const Size(double.infinity, 50),
-  //       ),
-  //       child: const Text('Add Expense'),
-  //     ),
-  //   );
-  // }
-
