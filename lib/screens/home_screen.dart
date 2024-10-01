@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'calendar_screen.dart';
+import 'login_screen.dart';
+import 'profile_screen.dart';
 import 'add_expense_button.dart';
 import 'dart:ui' as ui;
 
@@ -28,6 +31,16 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
         ),
+          actions: [
+            // Human face icon in the top right corner
+            IconButton(
+              icon: const Icon(Icons.person),
+              onPressed: () {
+                // Show the pop-up menu when the face icon is clicked
+                _showPopupMenu(context);
+              },
+            ),
+          ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -61,6 +74,66 @@ class HomeScreen extends StatelessWidget {
       floatingActionButton: const AddExpenseButton(), // Custom floating button
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked, // Position like in the image
     );
+  }
+
+
+// Function to display the popup menu
+  void _showPopupMenu(BuildContext context) {
+    showMenu(
+      context: context,
+      position: const RelativeRect.fromLTRB(100, 80, 0, 0), // Top right corner
+      items: [
+        const PopupMenuItem(
+          value: 'profile',
+          child: Row(
+            children: [
+              Icon(Icons.person),
+              SizedBox(width: 8),
+              Text('Profile'),
+            ],
+          ),
+        ),
+        const PopupMenuItem(
+          value: 'calendar',
+          child: Row(
+            children: [
+              Icon(Icons.calendar_today),
+              SizedBox(width: 8),
+              Text('Calendar'),
+            ],
+          ),
+        ),
+        const PopupMenuItem(
+          value: 'logout',
+          child: Row(
+            children: [
+              Icon(Icons.logout),
+              SizedBox(width: 8),
+              Text('Logout'),
+            ],
+          ),
+        ),
+      ],
+      elevation: 8.0,
+    ).then((value) {
+      // Handle actions based on the selected option
+      if (value == 'profile') {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ProfileScreen()),
+        );
+      } else if (value == 'calendar') {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const CalendarScreen()),
+        );
+      } else if (value == 'logout') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+        );
+      }
+    });
   }
 
 
